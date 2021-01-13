@@ -86,6 +86,22 @@ func findMobile(id int) (*Mobile, int, error) {
 	return nil, -1, http.ErrBodyNotAllowed
 }
 
+func Delete_Mobile(id int) {
+	_, pos, err := findMobile(id)
+	if err != nil {
+		fmt.Print("No such Mobile")
+	}
+	if pos < 0 || pos > len(mobileList) {
+		fmt.Print("invalid request")
+	} else {
+		for i := pos; i < len(mobileList)-1; i++ {
+
+			mobileList[i] = mobileList[i+1]
+		}
+	}
+
+}
+
 func (m *Mobile) ToJSON(w io.Writer) error {
 	s := json.NewEncoder(w)
 	return s.Encode(m)

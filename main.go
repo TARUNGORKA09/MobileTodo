@@ -25,6 +25,9 @@ func main() {
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/addMobile", mobile.AddMobile)
 
+	deleteRouter := sm.Methods(http.MethodDelete).Subrouter()
+	deleteRouter.HandleFunc("/deleteMobile/{id:[0-9]+}", mobile.DeleteMobile)
+
 	http.ListenAndServe(":8080", sm)
 
 }
