@@ -1,4 +1,4 @@
-module github.com/TARUNGORKA09/MobileTodo/tree/master
+module github.com/TARUNGORKA09/MobileTodo
 
 go 1.15
 

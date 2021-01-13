@@ -1,4 +1,4 @@
-package main
+package data
 
 import (
 	"encoding/json"
@@ -7,103 +7,61 @@ import (
 	"net/http"
 )
 
-type mobile struct {
-	general          General
-	display_features Display_features
-	os_Pro           Os_Pro
-	mem_Feat         Mem_Feat
-	cam_feat         Cam_feat
-	conn_Feat        Conn_Feat
+type Mobile struct {
+	General1          General          `json:"general"`
+	Display_features1 Display_features `json:"display_features"`
+	Os_Pro1           Os_Pro           `json:"os and processors"`
+	Mem_Feat1         Mem_Feat         `json:"memory features"`
+	Cam_feat1         Cam_feat         `json:"camera features"`
+	Conn_Feat1        Conn_Feat        `json:"connection features"`
 }
 
 type General struct {
-	Mod_num   int `json:"Id"`
-	Mod_name  string
-	Color     string
-	Sim_type  string
-	Touch_scr bool
+	Mod_num   int    `json:"Id"`
+	Mod_name  string `json:"mod_name"`
+	Color     string `json:"color"`
+	Sim_type  string `json:"sim_type"`
+	Touch_scr bool   `json:"touch_scr"`
 }
 
 type Display_features struct {
-	Disp_size    float32
-	Resolution   int
-	Display_type string
+	Disp_size    float32 `json:"disp_size"`
+	Resolution   int     `json:"resolution"`
+	Display_type string  `json:"disp_type"`
 }
 
 type Os_Pro struct {
-	Os       string
-	Pro_type string
-	Pro_core string
+	Os       string `json:"os"`
+	Pro_type string `json:"pro_type"`
+	Pro_core string `json:"pro_core"`
 }
 
 type Mem_Feat struct {
-	Int_stor    int
-	Ram         int
-	Expand_stor int32
+	Int_stor    int   `json:"int_stor"`
+	Ram         int   `json:"ram"`
+	Expand_stor int32 `json:"expand_stor"`
 }
 
 type Cam_feat struct {
-	Prim_cam_avail   bool
-	Prim_cam         string
-	Second_cam_avail bool
-	Second_cam       int
+	Prim_cam_avail   bool   `json:"prim_cam_avail"`
+	Prim_cam         string `json:"prim_cam"`
+	Second_cam_avail bool   `json:"second_cam_avail"`
+	Second_cam       int    `json:"seond_cam"`
 }
 
 type Conn_Feat struct {
-	Net_type  string
-	_3G       bool
-	GPRS      bool
-	Bluetooth bool
-	Blu_ver   float32
-	wifi      bool
-	GPS       bool
+	Net_type  string  `json:"net_type"`
+	_3G       bool    `json:"3G"`
+	GPRS      bool    `json:"GPRS"`
+	Bluetooth bool    `json:"bluetooth"`
+	Blu_ver   float32 `json:"blu_ver"`
+	Wifi      bool    `json:"wifi"`
+	GPS       bool    `json:"gps"`
 }
 
-var mobileList = []*mobile{
-	{
-		general: General{
-			Mod_num:   1,
-			Mod_name:  "Xiaomi",
-			Color:     "white",
-			Sim_type:  "Dual",
-			Touch_scr: true,
-		},
-		display_features: Display_features{
-			Disp_size:    6.5,
-			Display_type: "AMOLED",
-			Resolution:   4500,
-		},
-		os_Pro: Os_Pro{
-			Os:       "Android",
-			Pro_core: "octa core",
-			Pro_type: "MediaTek",
-		},
-		mem_Feat: Mem_Feat{
-			Int_stor:    64,
-			Expand_stor: 512,
-			Ram:         8,
-		},
-		cam_feat: Cam_feat{
-			Prim_cam_avail:   true,
-			Prim_cam:         "48 x 2 x 5",
-			Second_cam_avail: true,
-			Second_cam:       48,
-		},
-		conn_Feat: Conn_Feat{
-			Net_type:  "4G",
-			_3G:       true,
-			GPRS:      true,
-			Bluetooth: true,
-			Blu_ver:   5.1,
-			wifi:      true,
-			GPS:       true,
-		},
-	},
-}
+func GetMobile(id int) *Mobile {
 
-func (m mobile) getMobile(id int) *mobile {
-
-	_, pos, err := findProduct(id)
+	_, pos, err := findMobile(id)
 	if err != nil {
 		fmt.Print("Unable to find mobile")
 	}
@@ -111,21 +69,71 @@ func (m mobile) getMobile(id int) *mobile {
 
 }
 
-func findProduct(id int) (*mobile, int, error) {
+func Add_Mobile(m *Mobile) {
+
+	mob := mobileList[len(mobileList)-1]
+	m.General1.Mod_num = mob.General1.Mod_num + 1
+	mobileList = append(mobileList, m)
+
+}
+
+func findMobile(id int) (*Mobile, int, error) {
 	for i, p := range mobileList {
-		if p.general.Mod_num == id {
+		if p.General1.Mod_num == id {
 			return p, i, nil
 		}
 	}
 	return nil, -1, http.ErrBodyNotAllowed
 }
 
-func (m *mobile) ToJSON(w io.Writer) error {
+func (m *Mobile) ToJSON(w io.Writer) error {
 	s := json.NewEncoder(w)
 	return s.Encode(m)
 }
 
-func (m *mobile) ToDATA(r io.Reader) error {
+func (m *Mobile) ToDATA(r io.Reader) error {
 	s := json.NewDecoder(r)
 	return s.Decode(m)
+}
+
+var mobileList = []*Mobile{
+	{
+		General1: General{
+			Mod_num:   1,
+			Mod_name:  "Xiaomi",
+			Color:     "white",
+			Sim_type:  "Dual",
+			Touch_scr: true,
+		},
+		Display_features1: Display_features{
+			Disp_size:    6.5,
+			Display_type: "AMOLED",
+			Resolution:   4500,
+		},
+		Os_Pro1: Os_Pro{
+			Os:       "Android",
+			Pro_core: "octa core",
+			Pro_type: "MediaTek",
+		},
+		Mem_Feat1: Mem_Feat{
+			Int_stor:    64,
+			Expand_stor: 512,
+			Ram:         8,
+		},
+		Cam_feat1: Cam_feat{
+			Prim_cam_avail:   true,
+			Prim_cam:         "48 x 2 x 5",
+			Second_cam_avail: true,
+			Second_cam:       48,
+		},
+		Conn_Feat1: Conn_Feat{
+			Net_type:  "4G",
+			_3G:       true,
+			GPRS:      true,
+			Bluetooth: true,
+			Blu_ver:   5.1,
+			Wifi:      true,
+			GPS:       true,
+		},
+	},
 }
