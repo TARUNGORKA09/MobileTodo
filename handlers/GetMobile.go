@@ -1,9 +1,12 @@
 package handlers
 
 import (
+	"encoding/base64"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/TARUNGORKA09/MobileTodo/data"
 	"github.com/gorilla/mux"
@@ -19,6 +22,19 @@ func NewMobile(m *log.Logger) *MobileInfo {
 
 func (p *MobileInfo) GetMobileInfo(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("content-type", "application/json")
+
+	password := strings.SplitN(r.Header.Get("Authorization"), " ", 2)
+
+	if password[0] != "Basic" {
+		fmt.Errorf("Not a valid Authorization", password)
+	}
+
+	pass, err := base64.StdEncoding.DecodeString(password[1])
+	if err != nil {
+		fmt.Errorf("unable to convert from base64 to string", password)
+	}
+	pass1 := strings.SplitN(string(pass), ":", 2)
+	fmt.Fprint(rw, string(pass1[0]))
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
